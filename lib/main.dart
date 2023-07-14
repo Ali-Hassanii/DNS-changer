@@ -100,6 +100,7 @@ class _AppLogicState extends State<AppLogic> with WindowListener {
   Widget build(BuildContext context) {
     return const MaterialApp(
       title: "DNS changer",
+      debugShowCheckedModeBanner: false,
       home: RootPage(),
     );
   }
