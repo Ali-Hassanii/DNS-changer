@@ -1,16 +1,30 @@
-# dns_changer
+# DNS changer
+This application is developed by the [Flutter framework](https://flutter.dev/).
 
-A new Flutter project.
 
-## Getting Started
+## State:
+This app is currently **under development** and **has not released** yet!
+Stay tuned for updates
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
+## What it can do?
+It is built to change system `Domain Name Service`. The main point is to change this settings by one click, user friendly and easy to use.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Servers
+There are some built in servers including:
+- [Google public DNS](https://developers.google.com/speed/public-dns)
+- [CloudFlare DNS](https://www.cloudflare.com/learning/dns/what-is-1.1.1.1/)
+- [OpenDns](https://www.opendns.com/)
+
+You can also provide you desired DNS provider.
+
+
+## Why is it important to change DNS?
+Based on [WhatIsMyIpAddress.com](https://whatismyipaddress.com/switch-dns):
+1. Faster service
+2. Reliable service
+3. Block bad content
+4. Better protection
+5. Access blocked content
+   And more ...
