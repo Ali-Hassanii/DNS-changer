@@ -1,9 +1,7 @@
-import 'package:dns_changer/modules/connection_cubit.dart';
+import 'package:dns_changer/blocs/connection_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:window_manager/window_manager.dart';
-
-part 'app_bar.dart';
+import 'package:dns_changer/widgets/app_bar_popup.dart';
 
 ConnectionCubit connection = ConnectionCubit();
 

@@ -23,8 +23,8 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/app_icon.ico
-    - assets/app_icon.png
+    - assets/images/app_icon.ico
+    - assets/images/app_icon.png
   # fonts:
   #   - family: Schyler
   #     fonts:

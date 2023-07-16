@@ -1,13 +1,6 @@
-part of 'root.dart';
-
-class ItemContent {
-  String? value;
-  String? label;
-  IconData? icon;
-  bool enabled;
-
-  ItemContent({this.value, this.label, this.icon, this.enabled = true});
-}
+import 'package:dns_changer/models/popup_item_model.dart';
+import 'package:flutter/material.dart';
+import 'package:window_manager/window_manager.dart';
 
 List items = [
   ItemContent(
