@@ -25,10 +25,14 @@ class _AppLogicState extends State<AppLogic> {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       title: "DNS changer",
       debugShowCheckedModeBanner: false,
-      home: RootPage(),
+      initialRoute: "/root",
+      routes: {
+        "/root": (BuildContext context) => const RootPage(),
+        "/server": (BuildContext context) => const ServerPage(),
+      },
     );
   }
 }
