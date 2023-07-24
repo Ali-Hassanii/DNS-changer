@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:dns_changer/blocs/connection_cubit.dart';
 import 'package:dns_changer/screens/screens.dart';
-import 'package:dns_changer/services/network_channel.dart';
+import 'package:dns_changer/services/adapter_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dns_changer/widgets/app_bar_popup.dart';
@@ -14,6 +14,35 @@ class RootPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AdapterManager manager = AdapterManager();
+    SnackBar successSnackBar = const SnackBar(
+      content: Row(
+        children: [
+          Icon(
+            Icons.check,
+            color: Colors.greenAccent,
+          ),
+          SizedBox(width: 10),
+          Text("Success"),
+        ],
+      ),
+      backgroundColor: Colors.green,
+      duration: Duration(milliseconds: 200),
+    );
+    SnackBar failedSnackBar = const SnackBar(
+      content: Row(
+        children: [
+          Icon(
+            Icons.close,
+            color: Colors.redAccent,
+          ),
+          SizedBox(width: 10),
+          Text("Failed"),
+        ],
+      ),
+      backgroundColor: Colors.red,
+      duration: Duration(milliseconds: 200),
+    );
     return BlocBuilder<ConnectionCubit, bool>(
       bloc: connection,
       builder: (context, state) {
@@ -53,8 +82,30 @@ class RootPage extends StatelessWidget {
                       },
                     ),
                   ),
-                  child: const Text("Select server"),
+                  child: Text(
+                    "Select server",
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
                 ),
+                Tooltip(
+                  message: "Obtain DNS address automatically",
+                  child: ElevatedButton(
+                      onPressed: () async {
+                        String interface = await manager.activeInterface();
+                        bool done = await manager.resetDns(interface);
+                        if (done) {
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(successSnackBar);
+                        } else {
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(failedSnackBar);
+                        }
+                      },
+                      child: Text(
+                        "Enable DHCP",
+                        style: Theme.of(context).textTheme.bodySmall,
+                      )),
+                )
               ],
             ),
           ),
@@ -67,11 +118,18 @@ class RootPage extends StatelessWidget {
                 Tooltip(
                   message: "Clear system DNS records",
                   child: ElevatedButton(
-                    onPressed: () {
-                      if (Platform.isWindows) {
-                        Process.run("cmd.exe", ["ipconfig /flushdns"]);
+                    onPressed: () async {
+                      bool done = await manager.flushDns();
+                      if (done) {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(successSnackBar);
+                      } else {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(failedSnackBar);
                       }
                     },
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.pinkAccent),
                     child: Text(
                       "Clear cache",
                       style: Theme.of(context).textTheme.bodySmall,
@@ -83,10 +141,20 @@ class RootPage extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: () async {
                       if (Platform.isWindows) {
-                        NetworkAdapter network = NetworkAdapter();
-                        network.getTest();
+                        String interface = await manager.activeInterface();
+                        bool done = await manager
+                            .setDns(interface, ["8.8.8.8", "8.8.4.4"]);
+                        if (done) {
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(successSnackBar);
+                        } else {
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(failedSnackBar);
+                        }
                       }
                     },
+                    style:
+                        ElevatedButton.styleFrom(backgroundColor: Colors.green),
                     child: Text(
                       "Apply",
                       style: Theme.of(context).textTheme.bodySmall,
