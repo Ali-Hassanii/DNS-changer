@@ -1,6 +1,8 @@
 import 'dart:developer';
 import 'dart:io' show NetworkInterface, Platform, Process, ProcessResult;
 
+// TODO: Create bloc for this part
+
 class AdapterManager {
   Future<String> activeInterface() async {
     if (Platform.isWindows) {
