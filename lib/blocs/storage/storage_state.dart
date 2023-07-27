@@ -17,5 +17,10 @@ class GotError extends StorageState {
   final String where;
   final String error;
 
-  GotError({required this.where, required this.error});
+  GotError({required this.where, required this.error}) {
+    log(
+      "Where: $where | Error:\n$error",
+      name: "StorageBlocStates -> GotError",
+    );
+  }
 }

@@ -1,11 +1,13 @@
-import 'dart:async';
+import 'dart:ffi';
+import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 
 import '../../models/server.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
+import 'package:sqlite3/sqlite3.dart';
+import 'package:sqlite3/open.dart';
+import 'package:path/path.dart' as path;
 
 part 'storage_event.dart';
 
@@ -14,8 +16,9 @@ part 'storage_state.dart';
 class StorageBloc extends Bloc<StorageEvent, StorageState> {
   late Database database;
 
-  Future<List<Server>> loadServers() async {
-    final List<Map<String, dynamic>> raw = await database.query("servers");
+  List<Server> loadServers() {
+    final List<Map<String, dynamic>> raw =
+        database.select("SELECT * FROM servers;");
     final List<Server> data = List.generate(
       raw.length,
       (i) => Server(
@@ -28,33 +31,33 @@ class StorageBloc extends Bloc<StorageEvent, StorageState> {
     return data;
   }
 
+  DynamicLibrary _openOnWindows() {
+    return DynamicLibrary.open(path.absolute("sqlite3.dll"));
+  }
+
   StorageBloc() : super(StorageInitial()) {
     on<Initial>((event, emit) async {
       emit(LoadingData());
       try {
-        database = await openDatabase(
-          version: 1,
-          join(await getDatabasesPath(), "dns_changer_data.db"),
-          onCreate: (database, version) {
-            return database.execute(
-              "CREATE TABLE servers (id INTEGER PRIMARY KEY, title TEXT, "
-              "server1 TEXT, server2 TEXT);",
-            );
-          },
+        open.overrideFor(OperatingSystem.windows, _openOnWindows);
+
+        database = sqlite3.open(
+          path.absolute("dns_changer_data.db"),
         );
-        emit(ServersList(await loadServers()));
+        emit(ServersList(loadServers()));
       } catch (E) {
         emit(GotError(where: "initialization", error: E.toString()));
       }
     });
-    on<InsertServer>((event, emit) async {
+    on<InsertServer>((event, emit) {
       emit(LoadingData());
       try {
-        await database.insert(
-          "server",
-          event.server.toMap(),
-        );
-        emit(ServersList(await loadServers()));
+        Server server = event.server;
+        database.execute("""
+          INSERT INTO servers (title, server1, server2) VALUES 
+          ('${server.title}', '${server.address1}', '${server.address2}');
+          """);
+        emit(ServersList(loadServers()));
       } catch (E) {
         emit(GotError(where: "add new server", error: E.toString()));
       }
@@ -62,13 +65,14 @@ class StorageBloc extends Bloc<StorageEvent, StorageState> {
     on<UpdateServer>((event, emit) async {
       emit(LoadingData());
       try {
-        await database.update(
-          "servers",
-          event.server.toMap(),
-          where: "id = ?",
-          whereArgs: [event.server.id],
-        );
-        emit(ServersList(await loadServers()));
+        Server server = event.server;
+        database.execute("""
+          UPDATE servers
+          SET title='${server.title}', server1='${server.address1}', 
+          server2='${server.address2}'
+          WHERE id=${server.id};
+          """);
+        emit(ServersList(loadServers()));
       } catch (E) {
         emit(GotError(where: "update this server", error: E.toString()));
       }
@@ -78,16 +82,15 @@ class StorageBloc extends Bloc<StorageEvent, StorageState> {
       try {
         if (event.ids.isNotEmpty) {
           for (int id in event.ids) {
-            await database.delete(
-              "servers",
-              where: "id = ?",
-              whereArgs: [id],
-            );
+            database.execute("""
+              DELETE FROM servers
+              WHERE id=$id;
+              """);
           }
         } else {
-          await database.execute("DELETE FROM servers;");
+          database.execute("DELETE FROM servers;");
         }
-        emit(ServersList(await loadServers()));
+        emit(ServersList(loadServers()));
       } catch (E) {
         emit(GotError(where: "delete selected server(s)", error: E.toString()));
       }
