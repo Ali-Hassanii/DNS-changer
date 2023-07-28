@@ -36,7 +36,7 @@ class StorageBloc extends Bloc<StorageEvent, StorageState> {
   }
 
   StorageBloc() : super(StorageInitial()) {
-    on<Initial>((event, emit) async {
+    on<Initial>((event, emit) {
       emit(LoadingData());
       try {
         open.overrideFor(OperatingSystem.windows, _openOnWindows);
@@ -62,7 +62,7 @@ class StorageBloc extends Bloc<StorageEvent, StorageState> {
         emit(GotError(where: "add new server", error: E.toString()));
       }
     });
-    on<UpdateServer>((event, emit) async {
+    on<UpdateServer>((event, emit) {
       emit(LoadingData());
       try {
         Server server = event.server;
@@ -77,7 +77,7 @@ class StorageBloc extends Bloc<StorageEvent, StorageState> {
         emit(GotError(where: "update this server", error: E.toString()));
       }
     });
-    on<DeleteServer>((event, emit) async {
+    on<DeleteServer>((event, emit) {
       emit(LoadingData());
       try {
         if (event.ids.isNotEmpty) {
