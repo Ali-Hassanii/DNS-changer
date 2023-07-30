@@ -25,7 +25,7 @@ class UpdateServer extends StorageEvent {
 
 @immutable
 class DeleteServer extends StorageEvent {
-  final List<int> ids;
+  final int? id;
 
-  DeleteServer(this.ids);
+  DeleteServer(this.id);
 }

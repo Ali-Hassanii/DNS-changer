@@ -80,13 +80,11 @@ class StorageBloc extends Bloc<StorageEvent, StorageState> {
     on<DeleteServer>((event, emit) {
       emit(LoadingData());
       try {
-        if (event.ids.isNotEmpty) {
-          for (int id in event.ids) {
-            database.execute("""
+        if (event.id != null) {
+          database.execute("""
               DELETE FROM servers
-              WHERE id=$id;
+              WHERE id=${event.id};
               """);
-          }
         } else {
           database.execute("DELETE FROM servers;");
         }

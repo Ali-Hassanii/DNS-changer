@@ -1,11 +1,11 @@
 class Server {
-  int? id;
+  int id;
   String title;
   String address1;
   String address2;
 
   Server({
-    this.id,
+    this.id = 0,
     required this.title,
     required this.address1,
     required this.address2,
