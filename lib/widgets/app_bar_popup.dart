@@ -1,13 +1,14 @@
 import 'package:dns_changer/models/popup_item_model.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:window_manager/window_manager.dart';
 
+/// You can change items here
 List items = [
   ItemContent(
-    value: "server",
-    label: "Edit servers",
-    icon: Icons.dns,
-    enabled: false,
+    value: "about",
+    label: "About this app",
+    icon: Icons.info_outline,
   ),
   ItemContent(),
   ItemContent(
@@ -27,14 +28,9 @@ List items = [
     icon: Icons.attach_money,
     enabled: false,
   ),
-  ItemContent(
-    value: "about",
-    label: "About this app",
-    icon: Icons.open_in_browser,
-    enabled: false,
-  ),
 ];
 
+/// You can change look here
 class AppBarPopup extends StatelessWidget {
   const AppBarPopup({super.key});
 
@@ -43,8 +39,12 @@ class AppBarPopup extends StatelessWidget {
     return PopupMenuButton<String>(
       icon: const Icon(Icons.menu),
       tooltip: "Menu",
+      /// change items' functionality here
       onSelected: (String item) {
         switch (item) {
+          case "about":
+            Uri link = Uri.parse("https://github.com/Ali-Hassanii/DNS-changer#dns-changer");
+            launchUrl(link);
           case "close":
             windowManager.hide();
             break;
