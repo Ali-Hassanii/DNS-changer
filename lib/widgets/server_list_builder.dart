@@ -18,8 +18,10 @@ class ServerListBuilder extends StatelessWidget {
         return Card(
           key: ValueKey<int>(server.id),
           child: ListTile(
-            onTap: () {},
-            // TODO: Create cubit to selecting server
+            onTap: () {
+              // TODO: Create cubit to selecting server
+            },
+
             onLongPress: () {
               showModalBottomSheet(
                 context: context,
@@ -46,7 +48,9 @@ class ServerListBuilder extends StatelessWidget {
         );
       },
       itemCount: servers.length,
-      onReorder: (oldIndex, newIndex) {},
+      onReorder: (oldIndex, newIndex) {
+        // TODO: Reorder the list and update it in database
+      },
     );
   }
 }
