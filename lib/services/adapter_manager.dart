@@ -21,6 +21,7 @@ class AdapterManager {
     if (hosts.length > 2) {
       return false;
     } else {
+      await resetDns(interface);
       for (String host in hosts) {
         final ProcessResult result = await Process.run(
           "netsh",
