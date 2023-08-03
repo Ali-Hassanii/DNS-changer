@@ -1,3 +1,4 @@
+import 'package:dns_changer/blocs/select_server_cubit.dart';
 import 'package:dns_changer/widgets/server_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,7 +20,8 @@ class ServerListBuilder extends StatelessWidget {
           key: ValueKey<int>(server.id),
           child: ListTile(
             onTap: () {
-              // TODO: Create cubit to selecting server
+              BlocProvider.of<SelectServerCubit>(context).selectServer(server);
+              Navigator.pop(context);
             },
 
             onLongPress: () {
