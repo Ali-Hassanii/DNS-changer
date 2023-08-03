@@ -29,7 +29,7 @@ class ServerListBuilder extends StatelessWidget {
                 builder: (_) => BlocProvider.value(
                   value: BlocProvider.of<StorageBloc>(context),
                   child: ServerBottomSheet(
-                    id: server.id,
+                    server: server,
                   ),
                 ),
               );

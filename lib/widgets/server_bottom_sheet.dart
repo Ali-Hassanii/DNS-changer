@@ -1,11 +1,14 @@
 import 'package:dns_changer/blocs/storage/storage_bloc.dart';
+import 'package:dns_changer/screens/server_detail_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ServerBottomSheet extends StatelessWidget {
-  const ServerBottomSheet({super.key, required this.id});
+import '../models/server.dart';
 
-  final int id;
+class ServerBottomSheet extends StatelessWidget {
+  const ServerBottomSheet({super.key, required this.server});
+
+  final Server server;
   static const Radius radius = Radius.circular(20.0);
 
   @override
@@ -28,8 +31,16 @@ class ServerBottomSheet extends StatelessWidget {
           const SizedBox(height: 15),
           ElevatedButton(
             onPressed: () {
-              // TODO: Navigate to edit page
               Navigator.pop(context);
+              showDialog(
+                context: context,
+                builder: (_) => BlocProvider.value(
+                  value: BlocProvider.of<StorageBloc>(context),
+                  child: ServerDetailDialog(
+                    server: server,
+                  ),
+                ),
+              );
             },
             style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green,
@@ -48,12 +59,12 @@ class ServerBottomSheet extends StatelessWidget {
           const SizedBox(height: 8),
           ElevatedButton(
             onPressed: () {
-              BlocProvider.of<StorageBloc>(context).add(DeleteServer(id));
+              BlocProvider.of<StorageBloc>(context)
+                  .add(DeleteServer(server.id));
               Navigator.pop(context);
             },
             style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                minimumSize: const Size(100, 45)),
+                backgroundColor: Colors.red, minimumSize: const Size(100, 45)),
             child: const Row(
               children: [
                 Icon(
